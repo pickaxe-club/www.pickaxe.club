@@ -1,6 +1,14 @@
 #!/bin/bash
+
 set -e
 
-mapcrafter -c config.ini -j 1 -f overworld city island western shuffalo
-find _map -name '*.jpg' | xargs -P 1 jpegoptim --strip-all
-mv _map/* /var/www/html
+cores=3
+
+rm -rf map-old
+time mapcrafter -c mapcrafter.cfg -j $cores
+find map-gen -name '*.jpg' |xargs -P $cores jpegoptim --strip-all
+chmod -R o+rX map-gen
+mv map map-old
+mv map-gen map
+
+exit
